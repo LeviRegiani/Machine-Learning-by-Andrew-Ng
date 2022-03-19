@@ -40,48 +40,6 @@ function submitWithConfiguration(conf)
 end
 
 function [email token] = promptToken(email, existingToken, tokenFile)
-  if (~isempty(email) && ~isempty(function submitWithConfiguration(conf)
-  addpath('./lib/jsonlab');
-
-  parts = parts(conf);
-
-  fprintf('== Submitting solutions | %s...\n', conf.itemName);
-
-  tokenFile = 'token.mat';
-  if exist(tokenFile, 'file')
-    load(tokenFile);
-    [email token] = promptToken(email, token, tokenFile);
-  else
-    [email token] = promptToken('', '', tokenFile);
-  end
-
-  if isempty(token)
-    fprintf('!! Submission Cancelled\n');
-    return
-  end
-
-  try
-    response = submitParts(conf, email, token, parts);
-  catch
-    e = lasterror();
-    fprintf('\n!! Submission failed: %s\n', e.message);
-    fprintf('\n\nFunction: %s\nFileName: %s\nLineNumber: %d\n', ...
-      e.stack(1,1).name, e.stack(1,1).file, e.stack(1,1).line);
-    fprintf('\nPlease correct your code and resubmit.\n');
-    return
-  end
-
-  if isfield(response, 'errorMessage')
-    fprintf('!! Submission failed: %s\n', response.errorMessage);
-  elseif isfield(response, 'errorCode')
-    fprintf('!! Submission failed: %s\n', response.message);
-  else
-    showFeedback(parts, response);
-    save(tokenFile, 'email', 'token');
-  end
-end
-
-function [email token] = promptToken(email, existingToken, tokenFile)
   if (~isempty(email) && ~isempty(existingToken))
     prompt = sprintf( ...
       'Use token from last successful submission (%s)? (Y/n): ', ...

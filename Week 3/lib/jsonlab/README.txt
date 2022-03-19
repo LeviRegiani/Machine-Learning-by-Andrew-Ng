@@ -19,27 +19,6 @@ V.  Contribution and feedback
 
 -------------------------------------------------------------------------------
 
-===============================================================================
-=                                 JSONLab                                     =
-=           An open-source MATLAB/Octave JSON encoder and decoder             =
-===============================================================================
-
-*Copyright (C) 2011-2015  Qianqian Fang <fangq at nmr.mgh.harvard.edu>
-*License: BSD License, see License_BSD.txt for details
-*Version: 1.0 (Optimus - Final)
-
--------------------------------------------------------------------------------
-
-Table of Content:
-
-I.  Introduction
-II. Installation
-III.Using JSONLab
-IV. Known Issues and TODOs
-V.  Contribution and feedback
-
--------------------------------------------------------------------------------
-
 I.  Introduction
 
 JSON ([http://www.json.org/ JavaScript Object Notation]) is a highly portable, 
