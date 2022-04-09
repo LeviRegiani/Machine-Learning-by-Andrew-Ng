@@ -8,8 +8,8 @@ function [J grad] = nnCostFunction(nn_params, ...
 %   [J grad] = NNCOSTFUNCTON(nn_params, hidden_layer_size, num_labels, ...
 %   X, y, lambda) computes the cost and gradient of the neural network. The
 %   parameters for the neural network are "unrolled" into the vector
-%   nn_params and need to be converted back into the weight matrices. 
-% 
+%   nn_params and need to be converted back into the weight matrices.
+%
 %   The returned parameter grad should be a "unrolled" vector of the
 %   partial derivatives of the neural network.
 %
@@ -64,24 +64,18 @@ Theta2_grad = zeros(size(Theta2));
 
 
 X = [ones(m, 1) X];
-a1 = sigmoid(X * Theta1');
-a1 = [ones(m, 1) a1];
-a2 = sigmoid(a1 * Theta2');
-J = (1 / m) * sum(-y .* log(sigmoid(a2)) - (1 - y) .* log(1 - sigmoid(a2)));
+z1 = Theta1 * X'; % (25*401)*(401*5000)
+a1 = sigmoid(z1);
+a1 = [ones(m, 1) a1'];
+z2 = Theta2 * a1';
+a2 = sigmoid(z2); %5000*26
 
+y_new = zeros(num_labels, m); % 10*5000
+for i=1:m,
+  y_new(y(i),i) = 1;
+end
 
-
-
-
-
-
-
-
-
-
-
-
-
+J = (1 / m) * sum(sum(-y_new .* log(a2) - (1 - y_new) .* log(1 - a2))) + (lambda / (2 * m)) * (sum(sum(Theta1(:, 2:size(Theta1, 2))) .^ 2) + sum(sum(Theta2(:, 2:size(Theta2, 2)) .^ 2)));
 
 
 % -------------------------------------------------------------
