@@ -64,18 +64,19 @@ Theta2_grad = zeros(size(Theta2));
 
 
 X = [ones(m, 1) X];
-z1 = Theta1 * X'; % (25*401)*(401*5000)
+z1 = X * Theta1'; % (401*5000)*(25*401)
 a1 = sigmoid(z1);
-a1 = [ones(m, 1) a1'];
-z2 = Theta2 * a1';
+a1 = [ones(m, 1) a1];
+z2 = a1 * Theta2';
 a2 = sigmoid(z2); %5000*26
 
-y_new = zeros(num_labels, m); % 10*5000
+y_new = zeros(m, num_labels); % 10*5000
+
 for i=1:m,
-  y_new(y(i),i) = 1;
+  y_new(i, y(i)) = 1;
 end
 
-J = (1 / m) * sum(sum(-y_new .* log(a2) - (1 - y_new) .* log(1 - a2))) + (lambda / (2 * m)) * (sum(sum(Theta1(:, 2:size(Theta1, 2))) .^ 2) + sum(sum(Theta2(:, 2:size(Theta2, 2)) .^ 2)));
+J = (1 / m) * sum(sum(-y_new .* log(a2) - (1 - y_new) .* log(1 - a2))) + (lambda / (2 * m)) * (sum(sum(Theta1(:, 2:end) .^ 2)) + sum(sum(Theta2(:, 2:end) .^ 2)));
 
 
 % -------------------------------------------------------------
