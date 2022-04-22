@@ -63,21 +63,29 @@ Theta2_grad = zeros(size(Theta2));
 %
 
 
-X = [ones(m, 1) X];
-z1 = X * Theta1'; % (401*5000)*(25*401)
-a1 = sigmoid(z1);
-a1 = [ones(m, 1) a1];
-z2 = a1 * Theta2';
-a2 = sigmoid(z2); %5000*26
+a1 = [ones(m, 1) X];
+z2 = X * Theta1'; % (5000*401)*(401*25)
+a2 = sigmoid(z2); % 5000*25
+a2 = [ones(m, 1) a2]; % 5000*26
+z3 = a1 * Theta2'; % (5000*26)*(26*10)
+a3 = sigmoid(z3); % 5000*10
 
-y_new = zeros(m, num_labels); % 10*5000
+y_new = zeros(m, num_labels); % 5000*10
 
 for i=1:m,
   y_new(i, y(i)) = 1;
 end
 
-J = (1 / m) * sum(sum(-y_new .* log(a2) - (1 - y_new) .* log(1 - a2))) + (lambda / (2 * m)) * (sum(sum(Theta1(:, 2:end) .^ 2)) + sum(sum(Theta2(:, 2:end) .^ 2)));
+J = (1 / m) * sum(sum(-y_new .* log(a3) - (1 - y_new) .* log(1 - a3))) + (lambda / (2 * m)) * (sum(sum(Theta1(:, 2:end) .^ 2)) + sum(sum(Theta2(:, 2:end) .^ 2)));
 
+for i=1:m
+  delta_3_k = a3(t, :) - y_new(t, :); % 1*10
+  delta_2 = delta_2 + delta_3_k * a2'; % (1*10)*()
+  delta_2_k = Theta2' * delta_3_k(t, :)' .* sigmoidGradient(a2(t, :))'; % (26*10)*(10*1)*(26*1)
+  delta_1 = delta_1 + delta_2_k * a'; 
+end
+
+delta_2 = Theta2' * delta_3' * sigmoidGradient(z2); % (26*10)*(10*5000)*(5000*10)
 
 % -------------------------------------------------------------
 
