@@ -82,31 +82,32 @@ delta_2 = 0;
 delta_1 = 0;
 
 for t=1:m
-  a1 = a1(t, :);
-  a1 = a1';
+  a1 = X(t, :); % (1*400)
+  a1 = [ones(1, 1) a1]; % (1*401)
 
-  z2 = Theta1 * a1;
-  a2 = sigmoid(z2);
+  z2 = Theta1 * a1'; % (25*401)*(401*1)
+  a2 = sigmoid(z2); % (25*1)
 
-  a2 = [1; a2];
-  z3 = Theta2 * a2;
-  a3 = sigmoid(z3);
+  a2 = [1; a2]; % (26*1)
+  z3 = Theta2 * a2; % (10*26)*(26*1)
+  a3 = sigmoid(z3); % (10*1)
 
-  z2 = [1; z2];
+  z2 = [1; z2]; % (26*1)
 
-  delta_3_k = a3 - y_new(:, t); % 1*10
-  delta_2_k = (Theta2' * delta_3_k) .* sigmoidGradient(z2); % (26*10)*(10*1)*(26*1)
+  delta_3_k = a3 - y_new(t, :)'; % 10*1 - 10*1
+  delta_2_k = (Theta2' * delta_3_k) .* sigmoidGradient(z2); % (26*10)*(10*1).*(26*1)
   
-  delta_2_k = delta_2_k(2:end);
+  delta_2_k = delta_2_k(2:end); % (25*1)
   
-  Theta2_grad = Theta2_grad + delta_3_k * a2';
-  Theta1_grad = Theta1_grad + delta_2_k * a1';
-
+  Theta1_grad = Theta1_grad + delta_2_k * a1; % (25*1)*(1*401)
+  Theta2_grad = Theta2_grad + delta_3_k * a2'; % (10*1)*(1*26)
 end
 
-Theta2_grad = (1 / m) * Theta2_grad;
-Theta1_grad = (1 / m) * Theta1_grad;
+Theta2_grad(:, 1) = (1 / m) * Theta2_grad(:, 1);
+Theta1_grad(:, 1) = (1 / m) * Theta1_grad(:, 1);
 
+Theta2_grad(:, 2:end) = (1 / m) * Theta2_grad(:, 2:end) + (lambda / m) * (Theta2(:, 2:end));
+Theta1_grad(:, 2:end) = (1 / m) * Theta1_grad(:, 2:end) + (lambda / m) * (Theta1(:, 2:end));
 % -------------------------------------------------------------
 
 % =========================================================================
